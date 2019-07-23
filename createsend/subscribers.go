@@ -15,6 +15,7 @@ type NewSubscriber struct {
 	CustomFields                           []CustomField `json:",omitempty"`
 	Resubscribe                            bool          `json:",omitempty"`
 	RestartSubscriptionBasedAutoresponders bool          `json:",omitempty"`
+	ConsentToTrack                         string        `json:",omitempty"`
 }
 
 // CustomField represents a subscriber custom data field.
