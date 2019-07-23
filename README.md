@@ -8,10 +8,11 @@ This is an unofficial library that is not affiliated with [Campaign
 Monitor](http://www.campaignmonitor.com). Official libraries are available at
 [github.com/campaignmonitor](https://github.com/campaignmonitor).
 
-**Documentation:** <https://sourcegraph.com/github.com/sourcegraph/createsend-go>
+This is branched of the work of sourcegraph but now has been archived.
+
+**Documentation:** <https://github.com/sourcegraph/createsend-go>
 
 [![Build Status](https://travis-ci.org/sourcegraph/createsend-go.png?branch=master)](https://travis-ci.org/sourcegraph/createsend-go)
-[![Sourcegraph](https://sourcegraph.com/github.com/sourcegraph/createsend-go/-/badge.svg)](https://sourcegraph.com/github.com/sourcegraph/createsend-go?badge)
 
 Example usage
 -------------
