@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 // CampaignRecipientsOptions represents the URL parameters that may be used to
@@ -141,4 +142,28 @@ func (c *APIClient) CreateCampaignFromTemplate(clientID string, campaign CreateC
 	var results string
 	err = c.Do(req, &results)
 	return results, err
+}
+
+type ScheduleCampaign struct {
+	ConfirmationEmail string `json:"ConfirmationEmail"`
+	SendDate          string `json:"SendDate"`
+}
+
+func (c *APIClient) ScheduleCampaign(campaignID string, confirmationEmail string, sendDate time.Time) (bool, error) {
+	u := fmt.Sprintf("campaigns/%s/send.json", campaignID)
+
+	sendDateStr := sendDate.Format("2006-01-02 15:04")
+
+	scheduleCampaign := ScheduleCampaign{ConfirmationEmail: confirmationEmail, SendDate: sendDateStr}
+	req, err := c.NewRequest("POST", u, scheduleCampaign)
+	if err != nil {
+		return false, err
+	}
+
+	var results string
+	err = c.Do(req, &results)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
