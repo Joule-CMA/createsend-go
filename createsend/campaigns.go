@@ -71,3 +71,74 @@ func (c *APIClient) CampaignRecipients(campaignID string, opt *CampaignRecipient
 	err = c.Do(req, &results)
 	return &results, err
 }
+
+// Campaign struct to create a campaign
+// See https://www.campaignmonitor.com/api/campaigns/ for
+// more information.
+type CreateCampaign struct {
+	Name            string          `json:"Name"`
+	Subject         string          `json:"Subject"`
+	FromName        string          `json:"FromName"`
+	FromEmail       string          `json:"FromEmail"`
+	ReplyTo         string          `json:"ReplyTo"`
+	ListIDs         []string        `json:"ListIDs"`
+	SegmentIDs      []string        `json:"SegmentIDs"`
+	TemplateID      string          `json:"TemplateID"`
+	TemplateContent TemplateContent `json:"TemplateContent"`
+}
+type Singleline struct {
+	Label   string `json:"Label,omitempty"`
+	Content string `json:"Content"`
+	Href    string `json:"Href,omitempty"`
+}
+type Multiline struct {
+	Content string `json:"Content"`
+}
+type Image struct {
+	Content string `json:"Content"`
+	Alt     string `json:"Alt,omitempty"`
+	Href    string `json:"Href,omitempty"`
+}
+type Item struct {
+	Layout      string       `json:"Layout"`
+	Singlelines []Singleline `json:"Singlelines"`
+	Multilines  []Multiline  `json:"Multilines"`
+	Images      []Image      `json:"Images"`
+}
+type Repeater struct {
+	Items []Item `json:"Items"`
+}
+type TemplateContent struct {
+	Singlelines []Singleline `json:"Singlelines,omitempty"`
+	Multilines  []Multiline  `json:"Multilines,omitempty"`
+	Images      []Image      `json:"Images,omitempty"`
+	Repeaters   []Repeater   `json:"Repeaters,omitempty"`
+}
+
+func (c *APIClient) CreateCampaign(clientID string, campaign CreateCampaign) (string, error) {
+
+	u := fmt.Sprintf("campaigns/%s.json", clientID)
+
+	req, err := c.NewRequest("POST", u, campaign)
+	if err != nil {
+		return "", err
+	}
+
+	var results string
+	err = c.Do(req, &results)
+	return results, err
+}
+
+func (c *APIClient) CreateCampaignFromTemplate(clientID string, campaign CreateCampaign) (string, error) {
+
+	u := fmt.Sprintf("campaigns/%s/fromTemplate.json", clientID)
+
+	req, err := c.NewRequest("POST", u, campaign)
+	if err != nil {
+		return "", err
+	}
+
+	var results string
+	err = c.Do(req, &results)
+	return results, err
+}
