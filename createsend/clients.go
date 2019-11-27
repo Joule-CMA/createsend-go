@@ -124,3 +124,28 @@ func (c *APIClient) Campaigns(clientID string) ([]*Campaign, error) {
 
 	return campaigns, err
 }
+
+type Template struct {
+	TemplateID    string `json:"TemplateID"`
+	Name          string `json:"Name"`
+	PreviewURL    string `json:"PreviewURL"`
+	ScreenshotURL string `json:"ScreenshotURL"`
+}
+
+// Campaigns return all the templates for a specific client
+func (c *APIClient) ListTemplates(clientID string) ([]*Template, error) {
+	u := fmt.Sprintf("clients/%s/templates.json", clientID)
+
+	req, err := c.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var templates []*Template
+	err = c.Do(req, &templates)
+	if err != nil {
+		return nil, err
+	}
+
+	return templates, err
+}
