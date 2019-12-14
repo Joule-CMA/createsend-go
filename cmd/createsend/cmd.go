@@ -16,26 +16,26 @@ var apiclient *createsend.APIClient
 
 func main() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: createsend command [OPTS] ARGS...\n")
-		fmt.Fprintln(os.Stderr)
-		fmt.Fprintln(os.Stderr, "The commands are:")
-		fmt.Fprintln(os.Stderr)
-		fmt.Fprintln(os.Stderr, "\tlist-clients")
-		fmt.Fprintln(os.Stderr, "\tlist-lists       CLIENT")
-		fmt.Fprintln(os.Stderr, "\tlists-for-email CLIENT EMAIL")
-		fmt.Fprintln(os.Stderr, "\tlist-subscribers LIST (active|unconfirmed|unsubscribed|bounced|deleted)")
-		fmt.Fprintln(os.Stderr, "\tget-subscriber   LIST EMAIL")
-		fmt.Fprintln(os.Stderr, "\tadd-subscriber   LIST EMAIL")
-		fmt.Fprintln(os.Stderr, "\tunsubscribe      LIST EMAIL")
-		fmt.Fprintln(os.Stderr)
-		fmt.Fprintln(os.Stderr)
-		fmt.Fprintln(os.Stderr, "Common arguments:")
-		fmt.Fprintln(os.Stderr)
-		fmt.Fprintln(os.Stderr, "\tCLIENT:\ta client ID")
-		fmt.Fprintln(os.Stderr, "\tLIST:\ta list ID")
-		fmt.Fprintln(os.Stderr, "\tEMAIL:\temail address")
-		fmt.Fprintln(os.Stderr)
-		fmt.Fprintln(os.Stderr, "Run `createsend command -h` for more information.")
+		_, _ = fmt.Fprintf(os.Stderr, "Usage: createsend command [OPTS] ARGS...\n")
+		_, _ = fmt.Fprintln(os.Stderr)
+		_, _ = fmt.Fprintln(os.Stderr, "The commands are:")
+		_, _ = fmt.Fprintln(os.Stderr)
+		_, _ = fmt.Fprintln(os.Stderr, "\tlist-clients")
+		_, _ = fmt.Fprintln(os.Stderr, "\tlist-lists       CLIENT")
+		_, _ = fmt.Fprintln(os.Stderr, "\tlists-for-email CLIENT EMAIL")
+		_, _ = fmt.Fprintln(os.Stderr, "\tlist-subscribers LIST (active|unconfirmed|unsubscribed|bounced|deleted)")
+		_, _ = fmt.Fprintln(os.Stderr, "\tget-subscriber   LIST EMAIL")
+		_, _ = fmt.Fprintln(os.Stderr, "\tadd-subscriber   LIST EMAIL")
+		_, _ = fmt.Fprintln(os.Stderr, "\tunsubscribe      LIST EMAIL")
+		_, _ = fmt.Fprintln(os.Stderr)
+		_, _ = fmt.Fprintln(os.Stderr)
+		_, _ = fmt.Fprintln(os.Stderr, "Common arguments:")
+		_, _ = fmt.Fprintln(os.Stderr)
+		_, _ = fmt.Fprintln(os.Stderr, "\tCLIENT:\ta client ID")
+		_, _ = fmt.Fprintln(os.Stderr, "\tLIST:\ta list ID")
+		_, _ = fmt.Fprintln(os.Stderr, "\tEMAIL:\temail address")
+		_, _ = fmt.Fprintln(os.Stderr)
+		_, _ = fmt.Fprintln(os.Stderr, "Run `createsend command -h` for more information.")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -60,11 +60,11 @@ func main() {
 		apiclient.Log = log.New(os.Stderr, "createsend: ", 0)
 	}
 
-	subcmd := flag.Arg(0)
+	subCmd := flag.Arg(0)
 	remaining := flag.Args()[1:]
-	switch subcmd {
+	switch subCmd {
 	case "list-clients":
-		listClients(remaining)
+		listClients()
 	case "list-lists":
 		listLists(remaining)
 	case "lists-for-email":
@@ -80,7 +80,7 @@ func main() {
 	}
 }
 
-func listClients(args []string) {
+func listClients() {
 	clients, err := apiclient.ListClients()
 	if err != nil {
 		log.Fatalf("Error listing clients: %s\n", err)

@@ -32,8 +32,7 @@ func setup() {
 
 	// createsend client configured to use test server
 	client = NewAPIClient(nil)
-	url, _ := url.Parse(server.URL)
-	client.BaseURL = url
+	client.BaseURL, _ = url.Parse(server.URL)
 }
 
 // teardown closes the test HTTP server.
@@ -53,12 +52,13 @@ func testQuerystring(t *testing.T, r *http.Request, want string) {
 	}
 }
 
+/*
 func testHeader(t *testing.T, r *http.Request, header string, want string) {
 	if value := r.Header.Get(header); want != value {
 		t.Errorf("Header %s = %s, want: %s", header, value, want)
 	}
 }
-
+*/
 func testURLParseError(t *testing.T, err error) {
 	if err == nil {
 		t.Errorf("Expected error to be returned")
@@ -136,12 +136,12 @@ func TestDo(t *testing.T) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, want %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"A":"a"}`)
+		_, _ = fmt.Fprint(w, `{"A":"a"}`)
 	})
 
 	req, _ := client.NewRequest("GET", "/", nil)
 	body := new(foo)
-	client.Do(req, body)
+	_ = client.Do(req, body)
 
 	want := &foo{"a"}
 	if !reflect.DeepEqual(body, want) {

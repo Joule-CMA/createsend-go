@@ -14,7 +14,7 @@ func TestAddSubscriber(t *testing.T) {
 
 	mux.HandleFunc("/subscribers/12CD.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		fmt.Fprint(w, `"alice@example.com"`)
+		_, _ = fmt.Fprint(w, `"alice@example.com"`)
 	})
 
 	sub := NewSubscriber{
@@ -34,7 +34,7 @@ func TestUpdateSubscriber(t *testing.T) {
 	mux.HandleFunc("/subscribers/12CD.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "PUT")
 		testQuerystring(t, r, "email=alice@example.com")
-		fmt.Fprint(w, "OK")
+		_, _ = fmt.Fprint(w, "OK")
 	})
 
 	sub := NewSubscriber{
@@ -54,7 +54,7 @@ func TestGetSubscriber(t *testing.T) {
 	mux.HandleFunc("/subscribers/12CD.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		testQuerystring(t, r, "email=alice@example.com")
-		fmt.Fprint(w, `{"EmailAddress":"alice@example.com","Name":"alice","Date":"2010-10-25 10:28:00"}`)
+		_, _ = fmt.Fprint(w, `{"EmailAddress":"alice@example.com","Name":"alice","Date":"2010-10-25 10:28:00"}`)
 	})
 
 	want := Subscriber{
@@ -78,10 +78,10 @@ func TestGetSubscriber_NotInList(t *testing.T) {
 
 	mux.HandleFunc("/subscribers/12CD.json", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, `{"Code": 203, "Message": "Subscriber not in list"}`)
+		_, _ = fmt.Fprint(w, `{"Code": 203, "Message": "Subscriber not in list"}`)
 	})
 
-	want := &CreatesendError{Code: 203, Message: "Subscriber not in list"}
+	want := &Error{Code: 203, Message: "Subscriber not in list"}
 	sub, err := client.GetSubscriber("12CD", "alice@example.com")
 	if !reflect.DeepEqual(err, want) {
 		t.Errorf("GetSubscriber returned error %+v, want %+v", err, want)
@@ -111,7 +111,7 @@ func TestImportSubscribers(t *testing.T) {
 
 	mux.HandleFunc("/subscribers/12CD/import.json", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w, `{"FailureDetails" : [], "TotalUniqueEmailsSubmitted" : 3, "TotalExistingSubscribed": 0, "TotalNewSubscribers" : 2, "DuplicateEmailsInSubmission" :[]}`)
+		_, _ = fmt.Fprint(w, `{"FailureDetails" : [], "TotalUniqueEmailsSubmitted" : 3, "TotalExistingSubscribed": 0, "TotalNewSubscribers" : 2, "DuplicateEmailsInSubmission" :[]}`)
 	})
 
 	s1 := ImportSubscriber{EmailAddress: "alice@example.com", Name: "Alice"}
@@ -131,7 +131,7 @@ func TestImportSubscribersFailed(t *testing.T) {
 
 	mux.HandleFunc("/subscribers/12CD/import.json", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, `{
+		_, _ = fmt.Fprint(w, `{
     "ResultData": {
         "TotalUniqueEmailsSubmitted": 3,
         "TotalExistingSubscribers": 2,
@@ -180,7 +180,7 @@ func TestDeleteSubscriberFail(t *testing.T) {
 	defer teardown()
 	mux.HandleFunc("/subscribers/12CD.json", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, `{"Code" : 1}`)
+		_, _ = fmt.Fprint(w, `{"Code" : 1}`)
 	})
 
 	err := client.DeleteSubscriber("12CD", "alice@example.com")

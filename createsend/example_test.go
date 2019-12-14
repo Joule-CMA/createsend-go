@@ -11,7 +11,7 @@ import (
 func Example() {
 	apiKey := os.Getenv("API_KEY")
 	if apiKey == "" {
-		fmt.Fprintf(os.Stderr, "You must set your Campaign Monitor API key in the API_KEY environment variable to run example_test.go. (Skipping.)\n")
+		_, _ = fmt.Fprintf(os.Stderr, "You must set your Campaign Monitor API key in the API_KEY environment variable to run example_test.go. (Skipping.)\n")
 		return
 	}
 

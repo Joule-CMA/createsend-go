@@ -14,7 +14,7 @@ func TestListSubscribers(t *testing.T) {
 
 	mux.HandleFunc("/lists/12CD/active.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
+		_, _ = fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
 		"ResultsOrderedBy": "email",
 	    "OrderDirection": "asc",
 	    "PageNumber": 1,
@@ -41,7 +41,7 @@ func TestListSubscribersEmptyOptions(t *testing.T) {
 
 	mux.HandleFunc("/lists/12CD/active.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
+		_, _ = fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
 		"ResultsOrderedBy": "email",
 	    "OrderDirection": "asc",
 	    "PageNumber": 1,
@@ -74,7 +74,7 @@ func TestListSubscribersOptionsDate(t *testing.T) {
 		if r.FormValue("page") != "" || r.FormValue("pagesize") != "" || r.FormValue("orderfield") != "" || r.FormValue("orderdirection") != "" {
 			t.Errorf("Unexpected extra parameters")
 		}
-		fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
+		_, _ = fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
 		"ResultsOrderedBy": "email",
 	    "OrderDirection": "asc",
 	    "PageNumber": 1,
@@ -110,7 +110,7 @@ func TestListSubscribersOptionsPage(t *testing.T) {
 		if r.FormValue("date") != "" || r.FormValue("orderfield") != "" || r.FormValue("orderdirection") != "" {
 			t.Errorf("Unexpected extra parameters")
 		}
-		fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
+		_, _ = fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
 		"ResultsOrderedBy": "email",
 	    "OrderDirection": "asc",
 	    "PageNumber": 3,
@@ -146,7 +146,7 @@ func TestListSubscribersOptionsOrder(t *testing.T) {
 		if r.FormValue("date") != "" || r.FormValue("page") != "" || r.FormValue("pagesize") != "" {
 			t.Errorf("Unexpected extra parameters")
 		}
-		fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
+		_, _ = fmt.Fprint(w, `{"Results": [{"EmailAddress": "alice@example.com", "Name": "alice"}],
 		"ResultsOrderedBy": "of",
 	    "OrderDirection": "desc",
 	    "PageNumber": 1,
@@ -173,7 +173,7 @@ func TestListCreate(t *testing.T) {
 
 	mux.HandleFunc("/lists/AAE3.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		fmt.Fprint(w, "\"12CD\"")
+		_, _ = fmt.Fprint(w, "\"12CD\"")
 	})
 
 	id, err := client.ListCreate("AAE3", &ListCreateOptions{Title: "Test", UnsubscribeSetting: AllClientLists})
@@ -205,7 +205,7 @@ func TestListCustomFields(t *testing.T) {
 	mux.HandleFunc("/lists/12CD/customfields.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `[
+		_, _ = fmt.Fprint(w, `[
 			{
 				"FieldName": "website",
 				"Key": "[website]",
@@ -265,7 +265,7 @@ func TestListCreateCustomField(t *testing.T) {
 	mux.HandleFunc("/lists/12CD/customfields.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `"AE12"`)
+		_, _ = fmt.Fprint(w, `"AE12"`)
 	})
 
 	id, err := client.ListCreateCustomField("12CD", &CustomFieldCreate{FieldName: "test", DataType: Text, VisibleInPreferenceCenter: false})
@@ -298,7 +298,7 @@ func TestListDeleteCustomFieldFail(t *testing.T) {
 	mux.HandleFunc("/lists/12CD/customfields/test.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "DELETE")
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, `{"Code":253}`)
+		_, _ = fmt.Fprint(w, `{"Code":253}`)
 	})
 
 	err := client.ListDeleteCustomField("12CD", "test")
@@ -313,7 +313,7 @@ func TestListSegments(t *testing.T) {
 	mux.HandleFunc("/lists/12CD/segments.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `[
+		_, _ = fmt.Fprint(w, `[
 				  {
 					"ListID": "12CD",
 					"SegmentID": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1",
@@ -347,7 +347,7 @@ func TestListWebhooks(t *testing.T) {
 	mux.HandleFunc("/lists/12CD/webhooks.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `[
+		_, _ = fmt.Fprint(w, `[
 				{
 					"WebhookID": "ee1b3864e5ca61618q98su98qsu9q",
 					"Events": [
@@ -389,7 +389,7 @@ func TestListCreateWebhook(t *testing.T) {
 	mux.HandleFunc("/lists/12CD/webhooks.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `"QWE123"`)
+		_, _ = fmt.Fprint(w, `"QWE123"`)
 	})
 
 	id, err := client.ListCreateWebhook("12CD", &WebhookCreate{Events: []string{"Subscribe"}, Url: "http://example.com/subscribe", PayloadFormat: "json"})
@@ -408,7 +408,7 @@ func TestListCreateWebhookFail(t *testing.T) {
 	mux.HandleFunc("/lists/12CD/webhooks.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, `{"Code" : 602}`)
+		_, _ = fmt.Fprint(w, `{"Code" : 602}`)
 	})
 
 	_, err := client.ListCreateWebhook("12CD", &WebhookCreate{Events: []string{"Subscribe"}, Url: "http://example.com/subscribe"})
@@ -437,7 +437,7 @@ func TestListTestWebhookFail(t *testing.T) {
 	mux.HandleFunc("/lists/12CD/webhooks/QWE123/test.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, `{
+		_, _ = fmt.Fprint(w, `{
 				"ResultData": {
 					"FailureStatus": "ProtocolError",
 					"FailureResponseMessage": "NotFound",

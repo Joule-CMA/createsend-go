@@ -13,7 +13,7 @@ func TestCampaignRecipients(t *testing.T) {
 
 	mux.HandleFunc("/campaigns/13CD/recipients.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		fmt.Fprint(w, `{
+		_, _ = fmt.Fprint(w, `{
 				"Results": [
 					{
 						"EmailAddress": "example+1@example.com",
@@ -99,7 +99,7 @@ func TestCampaignRecipientsOptions(t *testing.T) {
 		if r.FormValue("orderdirection") != "desc" {
 			t.Errorf("Expected orderdirection to equal desc but was %s", r.FormValue("orderdirection"))
 		}
-		fmt.Fprint(w, `{
+		_, _ = fmt.Fprint(w, `{
 				"Results": [
 					{
 						"EmailAddress": "example+1@example.com",

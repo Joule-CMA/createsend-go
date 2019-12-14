@@ -75,13 +75,13 @@ func (c *APIClient) NewRequest(method, urlStr string, body interface{}) (*http.R
 	return req, nil
 }
 
-type CreatesendError struct {
+type Error struct {
 	Code       int
 	Message    string
 	ResultData interface{}
 }
 
-func (e *CreatesendError) Error() string {
+func (e *Error) Error() string {
 	return fmt.Sprintf("%s (createsend error %d)", e.Message, e.Code)
 }
 
@@ -97,7 +97,7 @@ func (c *APIClient) Do(req *http.Request, v interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusBadRequest {
-		var e CreatesendError
+		var e Error
 		err = json.NewDecoder(resp.Body).Decode(&e)
 		if err != nil {
 			return err
@@ -107,7 +107,7 @@ func (c *APIClient) Do(req *http.Request, v interface{}) error {
 		if c.Log != nil {
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				log.Printf("ReadAll failed: %s")
+				log.Printf("ReadAll failed: %s", err.Error())
 			}
 			c.Log.Printf("http response %d body:\n%s", resp.StatusCode, body)
 		}

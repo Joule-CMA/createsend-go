@@ -13,7 +13,7 @@ func TestListClients(t *testing.T) {
 
 	mux.HandleFunc("/clients.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		fmt.Fprint(w, `[{"ClientID": "12ab", "Name": "Alice"}]`)
+		_, _ = fmt.Fprint(w, `[{"ClientID": "12ab", "Name": "Alice"}]`)
 	})
 
 	clients, err := client.ListClients()
@@ -33,7 +33,7 @@ func TestListLists(t *testing.T) {
 
 	mux.HandleFunc("/clients/12ab/lists.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		fmt.Fprint(w, `[{"ListID": "34cd", "Name": "mylist"}]`)
+		_, _ = fmt.Fprint(w, `[{"ListID": "34cd", "Name": "mylist"}]`)
 	})
 
 	lists, err := client.ListLists("12ab")
@@ -54,7 +54,7 @@ func TestListsForEmail(t *testing.T) {
 	mux.HandleFunc("/clients/12ab/listsforemail.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		testQuerystring(t, r, "email=alice@example.com")
-		fmt.Fprint(w, `[{"ListID": "34cd", "ListName": "mylist", "SubscriberState": "Active"}]`)
+		_, _ = fmt.Fprint(w, `[{"ListID": "34cd", "ListName": "mylist", "SubscriberState": "Active"}]`)
 	})
 
 	lists, err := client.ListsForEmail("12ab", "alice@example.com")
@@ -74,7 +74,7 @@ func TestCampaigns(t *testing.T) {
 
 	mux.HandleFunc("/clients/12ab/campaigns.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		fmt.Fprint(w, `
+		_, _ = fmt.Fprint(w, `
 				[
 					{
 						"FromName": "My Name",

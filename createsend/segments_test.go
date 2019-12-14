@@ -13,11 +13,11 @@ func TestSegmentCreate(t *testing.T) {
 	mux.HandleFunc("/segments/12CD.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
 		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w, `"EQS1"`)
+		_, _ = fmt.Fprint(w, `"EQS1"`)
 	})
 
 	rg := make([]RuleGroupCreate, 1)
-	rg[0].Rules = []RuleCreate{RuleCreate{RuleType: "DateSubscribed", Clause: "AFTER 2009-01-01"}}
+	rg[0].Rules = []RuleCreate{{RuleType: "DateSubscribed", Clause: "AFTER 2009-01-01"}}
 
 	sgmt := SegmentCreate{Title: "Test", RuleGroups: rg}
 	id, err := client.SegmentCreate("12CD", &sgmt)
@@ -39,11 +39,11 @@ func TestSegmentCreateFail(t *testing.T) {
 	mux.HandleFunc("/segments/12CD.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, `{"Code" : 275}`)
+		_, _ = fmt.Fprint(w, `{"Code" : 275}`)
 	})
 
 	rg := make([]RuleGroupCreate, 1)
-	rg[0].Rules = []RuleCreate{RuleCreate{RuleType: "DateSubscribed", Clause: "AFTER 2009-01-01"}}
+	rg[0].Rules = []RuleCreate{{RuleType: "DateSubscribed", Clause: "AFTER 2009-01-01"}}
 
 	sgmt := SegmentCreate{Title: "Test", RuleGroups: rg}
 	_, err := client.SegmentCreate("12CD", &sgmt)
@@ -60,7 +60,7 @@ func TestSegmentDetail(t *testing.T) {
 	mux.HandleFunc("/segments/12CD.json", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `{
+		_, _ = fmt.Fprint(w, `{
 				"ActiveSubscribers": 1,
 				"RuleGroups": [
 					{
@@ -93,6 +93,7 @@ func TestSegmentDetail(t *testing.T) {
 	s, err := client.SegmentDetail("12CD")
 	if err != nil {
 		t.Errorf("SegmentDetail returned an error")
+		return
 	}
 
 	if s.ActiveSubscribers != 1 {

@@ -20,11 +20,14 @@ type List struct {
 type SubscriberGroup string
 
 const (
-	ActiveSubscribers       SubscriberGroup = "active"
-	UnconfirmedSubscribers                  = "unconfirmed"
-	UnsubscribedSubscribers                 = "unsubscribed"
-	BouncedSubscribers                      = "bounced"
-	DeletedSubscribers                      = "deleted"
+	ActiveSubscribers SubscriberGroup = "active"
+
+/*
+	UnconfirmedSubscribers  SubscriberGroup = "unconfirmed"
+	UnsubscribedSubscribers SubscriberGroup = "unsubscribed"
+	BouncedSubscribers      SubscriberGroup = "bounced"
+	DeletedSubscribers      SubscriberGroup = "deleted"
+*/
 )
 
 // ListSubcribersOptions represents the URL parameters that may be used to
@@ -109,11 +112,11 @@ func (c *APIClient) ListDelete(listID string) error {
 	return err
 }
 
-type UnsubcribeSetting string
+type UnsubscribeSetting string
 
 const (
-	AllClientLists UnsubcribeSetting = "AllClientLists"
-	OnlyThisList                     = "OnlyThisList"
+	AllClientLists UnsubscribeSetting = "AllClientLists"
+	OnlyThisList                      = "OnlyThisList"
 )
 
 // ListCreateOptions represents the parameters needed
@@ -122,11 +125,11 @@ const (
 // See https://www.campaignmonitor.com/api/lists/#creating_a_list for
 // more information.
 type ListCreateOptions struct {
-	Title                   string            `json:"Title"`
-	UnsubscribePage         string            `json:"UnsubscribePage"`
-	UnsubscribeSetting      UnsubcribeSetting `json:"UnsubscribeSetting"`
-	ConfirmedOptin          bool              `json:"ConfirmedOptin"`
-	ConfirmationSuccessPage string            `json:"ConfirmationSuccessPage"`
+	Title                   string             `json:"Title"`
+	UnsubscribePage         string             `json:"UnsubscribePage"`
+	UnsubscribeSetting      UnsubscribeSetting `json:"UnsubscribeSetting"`
+	ConfirmedOptin          bool               `json:"ConfirmedOptin"`
+	ConfirmationSuccessPage string             `json:"ConfirmationSuccessPage"`
 }
 
 // ListCreate creates a new list
@@ -135,7 +138,7 @@ type ListCreateOptions struct {
 // information.
 func (c *APIClient) ListCreate(clientID string, opt *ListCreateOptions) (string, error) {
 	if opt.UnsubscribeSetting == "" {
-		return "", errors.New("Unsubscribesetting not set")
+		return "", errors.New("unsubscribesetting not set")
 	}
 
 	u := fmt.Sprintf("lists/%s.json", clientID)
@@ -153,7 +156,7 @@ func (c *APIClient) ListCreate(clientID string, opt *ListCreateOptions) (string,
 
 	s, ok := v.(string)
 	if !ok {
-		return "", errors.New("Returned value is not a string")
+		return "", errors.New("returned value is not a string")
 	}
 
 	return s, nil
@@ -161,14 +164,15 @@ func (c *APIClient) ListCreate(clientID string, opt *ListCreateOptions) (string,
 
 type DataType string
 
+//noinspection ALL
 const (
 	Text            DataType = "Text"
-	Number                   = "Number"
-	MultiSelectOne           = "MultiSelectOne"
-	MultiSelectMany          = "MultiSelectMany"
-	Date                     = "Date"
-	Country                  = "Country"
-	USState                  = "USState"
+	Number          DataType = "Number"
+	MultiSelectOne  DataType = "MultiSelectOne"
+	MultiSelectMany DataType = "MultiSelectMany"
+	Date            DataType = "Date"
+	Country         DataType = "Country"
+	USState         DataType = "USState"
 )
 
 type CustomFieldDefinition struct {
@@ -227,7 +231,7 @@ func (c *APIClient) ListCreateCustomField(listID string, def *CustomFieldCreate)
 
 	r, ok := v.(string)
 	if !ok {
-		return "", errors.New("Return is not a string")
+		return "", errors.New("return is not a string")
 	}
 
 	return r, nil
