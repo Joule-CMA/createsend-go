@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -163,7 +164,13 @@ func (c *APIClient) ScheduleCampaign(campaignID string, confirmationEmail string
 	var results string
 	err = c.Do(req, &results)
 	if err != nil {
-		return false, err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return true, nil
+		} else {
+			return false, err
+		}
 	}
 	return true, nil
 }
