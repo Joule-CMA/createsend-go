@@ -393,6 +393,8 @@ func (c *APIClient) ListTestWebhook(listID string, webhookID string) error {
 			return err
 		}
 	}
+
+	return nil
 }
 
 // ListDeleteWebhook deletes a given webhook for a given list.
