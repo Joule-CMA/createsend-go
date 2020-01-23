@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 const (
@@ -38,6 +39,7 @@ type APIClient struct {
 func NewAPIClient(httpClient *http.Client) *APIClient {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
+		httpClient.Timeout = 5 * time.Second
 	}
 	baseURL, _ := url.Parse(defaultBaseURL)
 

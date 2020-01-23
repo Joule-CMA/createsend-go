@@ -1,6 +1,9 @@
 package createsend
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // A Client represents a client of a Campaign Monitor account.
 //
@@ -26,8 +29,15 @@ func (c *APIClient) ListClients() ([]Client, error) {
 	clients := new([]Client)
 	err = c.Do(req, clients)
 	if err != nil {
-		return nil, err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return *clients, nil
+		} else {
+			return nil, err
+		}
 	}
+	return nil, err
 
 	return *clients, err
 }
@@ -46,6 +56,15 @@ func (c *APIClient) ListLists(clientID string) ([]*List, error) {
 
 	var lists []*List
 	err = c.Do(req, &lists)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return lists, nil
+		} else {
+			return lists, err
+		}
+	}
 	return lists, err
 }
 
@@ -85,7 +104,13 @@ func (c *APIClient) ListsForEmail(clientID string, email string) ([]*ListForEmai
 	var lists []*ListForEmail
 	err = c.Do(req, &lists)
 	if err != nil {
-		return nil, err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return lists, nil
+		} else {
+			return lists, err
+		}
 	}
 
 	return lists, err
@@ -119,9 +144,14 @@ func (c *APIClient) Campaigns(clientID string) ([]*Campaign, error) {
 	var campaigns []*Campaign
 	err = c.Do(req, &campaigns)
 	if err != nil {
-		return nil, err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return campaigns, nil
+		} else {
+			return campaigns, err
+		}
 	}
-
 	return campaigns, err
 }
 
@@ -144,7 +174,13 @@ func (c *APIClient) ListTemplates(clientID string) ([]*Template, error) {
 	var templates []*Template
 	err = c.Do(req, &templates)
 	if err != nil {
-		return nil, err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return templates, nil
+		} else {
+			return templates, err
+		}
 	}
 
 	return templates, err

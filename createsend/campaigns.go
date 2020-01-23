@@ -128,6 +128,15 @@ func (c *APIClient) CreateCampaign(clientID string, campaign CreateCampaign) (st
 
 	var results string
 	err = c.Do(req, &results)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return results, nil
+		} else {
+			return results, err
+		}
+	}
 	return results, err
 }
 
@@ -142,6 +151,15 @@ func (c *APIClient) CreateCampaignFromTemplate(clientID string, campaign CreateC
 
 	var results string
 	err = c.Do(req, &results)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return results, nil
+		} else {
+			return results, err
+		}
+	}
 	return results, err
 }
 

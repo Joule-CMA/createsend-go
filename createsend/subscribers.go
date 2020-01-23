@@ -2,6 +2,7 @@ package createsend
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -39,7 +40,18 @@ func (c *APIClient) AddSubscriber(listID string, sub NewSubscriber) error {
 		return err
 	}
 
-	return c.Do(req, nil)
+	err = c.Do(req, nil)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // UpdateSubscriber updates a subscriber.
@@ -54,7 +66,18 @@ func (c *APIClient) UpdateSubscriber(listID string, email string, sub NewSubscri
 		return err
 	}
 
-	return c.Do(req, nil)
+	err = c.Do(req, nil)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Subscriber represents a subscriber.
@@ -119,7 +142,18 @@ func (c *APIClient) Unsubscribe(listID string, email string) error {
 		return err
 	}
 
-	return c.Do(req, nil)
+	err = c.Do(req, nil)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return err
 }
 
 // Delete removes the Subscriber from the specified list
@@ -135,7 +169,19 @@ func (c *APIClient) DeleteSubscriber(listID string, email string) error {
 		return err
 	}
 
-	return c.Do(req, nil)
+	err = c.Do(req, nil)
+
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // NewSubscriber represents a new subscriber to be added with AddSubscriber.
@@ -170,5 +216,15 @@ func (c *APIClient) ImportSubscribers(listID string, importSubscribers ImportSub
 
 	var v interface{}
 	err = c.Do(req, &v)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return v, nil
+		} else {
+			return v, err
+		}
+	}
+
 	return v, err
 }

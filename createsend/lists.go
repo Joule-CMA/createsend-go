@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -224,14 +225,21 @@ func (c *APIClient) ListCreateCustomField(listID string, def *CustomFieldCreate)
 	}
 
 	var v interface{}
-	err = c.Do(req, &v)
-	if err != nil {
-		return "", err
-	}
 
 	r, ok := v.(string)
 	if !ok {
 		return "", errors.New("return is not a string")
+	}
+
+	err = c.Do(req, &v)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return r, nil
+		} else {
+			return r, err
+		}
 	}
 
 	return r, nil
@@ -250,6 +258,15 @@ func (c *APIClient) ListDeleteCustomField(listID string, cfKey string) error {
 	}
 
 	err = c.Do(req, nil)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
 
 	return err
 }
@@ -275,7 +292,13 @@ func (c *APIClient) ListSegments(listID string) ([]ListSegment, error) {
 	var result []ListSegment
 	err = c.Do(req, &result)
 	if err != nil {
-		return nil, err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return result, nil
+		} else {
+			return result, err
+		}
 	}
 
 	return result, nil
@@ -308,7 +331,13 @@ func (c *APIClient) ListWebhooks(listID string) ([]Webhook, error) {
 	var result []Webhook
 	err = c.Do(req, &result)
 	if err != nil {
-		return nil, err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return result, nil
+		} else {
+			return result, err
+		}
 	}
 
 	return result, nil
@@ -329,7 +358,13 @@ func (c *APIClient) ListCreateWebhook(listID string, webhook *WebhookCreate) (st
 	var result string
 	err = c.Do(req, &result)
 	if err != nil {
-		return "", err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return result, nil
+		} else {
+			return result, err
+		}
 	}
 
 	return result, nil
@@ -347,7 +382,17 @@ func (c *APIClient) ListTestWebhook(listID string, webhookID string) error {
 		return err
 	}
 
-	return c.Do(req, nil)
+	err = c.Do(req, nil)
+
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
 }
 
 // ListDeleteWebhook deletes a given webhook for a given list.
@@ -362,7 +407,18 @@ func (c *APIClient) ListDeleteWebhook(listID string, webhookID string) error {
 		return err
 	}
 
-	return c.Do(req, nil)
+	err = c.Do(req, nil)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // ListActivateWebhook actives a given webhook for a given list.
@@ -377,7 +433,18 @@ func (c *APIClient) ListActivateWebhook(listID string, webhookID string) error {
 		return err
 	}
 
-	return c.Do(req, nil)
+	err = c.Do(req, nil)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // ListDeactivateWebhook deactivates a given webhook for a given list.
@@ -392,5 +459,16 @@ func (c *APIClient) ListDeactivateWebhook(listID string, webhookID string) error
 		return err
 	}
 
-	return c.Do(req, nil)
+	err = c.Do(req, nil)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
