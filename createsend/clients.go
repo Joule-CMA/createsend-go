@@ -36,8 +36,8 @@ func (c *APIClient) ListClients() ([]Client, error) {
 		} else {
 			return nil, err
 		}
+		return nil, err
 	}
-	return nil, err
 
 	return *clients, err
 }
