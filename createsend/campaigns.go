@@ -141,7 +141,6 @@ func (c *APIClient) CreateCampaign(clientID string, campaign CreateCampaign) (st
 }
 
 func (c *APIClient) CreateCampaignFromTemplate(clientID string, campaign CreateCampaign) (string, error) {
-
 	u := fmt.Sprintf("campaigns/%s/fromTemplate.json", clientID)
 
 	req, err := c.NewRequest("POST", u, campaign)
