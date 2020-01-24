@@ -116,7 +116,11 @@ func (c *APIClient) GetSubscriber(listID string, email string) (*Subscriber, err
 	var sub Subscriber
 	err = c.Do(req, &sub)
 	if err != nil {
-		return nil, err
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) != 0 {
+			return nil, err
+		}
 	}
 
 	// Parse createsend API date format. (See Subscriber.DateStr field comment.)
