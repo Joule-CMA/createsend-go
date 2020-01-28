@@ -191,3 +191,47 @@ func (c *APIClient) ScheduleCampaign(campaignID string, confirmationEmail string
 	}
 	return true, nil
 }
+
+func (c *APIClient) UnscheduleCampaign(campaignID string) error {
+	u := fmt.Sprintf("campaigns/%s/unschedule.json", campaignID)
+
+	req, err := c.NewRequest("POST", u, nil)
+	if err != nil {
+		return err
+	}
+
+	var results string
+	err = c.Do(req, &results)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c *APIClient) DeleteCampaign(campaignID string) error {
+	u := fmt.Sprintf("campaigns/%s.json", campaignID)
+
+	req, err := c.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return err
+	}
+
+	var results string
+	err = c.Do(req, &results)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+	return nil
+}

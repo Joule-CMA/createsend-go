@@ -129,6 +129,39 @@ type Campaign struct {
 	TotalRecipients   int64  `json:"TotalRecipients"`
 }
 
+type ScheduledCampaign struct {
+	DateScheduled     string `json:"DateScheduled"`
+	ScheduledTimeZone string `json:"ScheduledTimeZone"`
+	CampaignID        string `json:"CampaignID"`
+	Name              string `json:"Name"`
+	Subject           string `json:"Subject"`
+	FromName          string `json:"FromName"`
+	FromEmail         string `json:"FromEmail"`
+	ReplyTo           string `json:"ReplyTo"`
+	DateCreated       string `json:"DateCreated"`
+	PreviewURL        string `json:"PreviewURL"`
+	PreviewTextURL    string `json:"PreviewTextURL"`
+}
+
+type DraftCampaign struct {
+	CampaignID     string `json:"CampaignID"`
+	Name           string `json:"Name"`
+	Subject        string `json:"Subject"`
+	FromName       string `json:"FromName"`
+	FromEmail      string `json:"FromEmail"`
+	ReplyTo        string `json:"ReplyTo"`
+	DateCreated    string `json:"DateCreated"`
+	PreviewURL     string `json:"PreviewURL"`
+	PreviewTextURL string `json:"PreviewTextURL"`
+}
+
+type Template struct {
+	TemplateID    string `json:"TemplateID"`
+	Name          string `json:"Name"`
+	PreviewURL    string `json:"PreviewURL"`
+	ScreenshotURL string `json:"ScreenshotURL"`
+}
+
 // Campaigns return all the sent campaigns for a specific client
 //
 // See https://www.campaignmonitor.com/api/clients/#sent_campaigns for more
@@ -155,11 +188,56 @@ func (c *APIClient) Campaigns(clientID string) ([]*Campaign, error) {
 	return campaigns, err
 }
 
-type Template struct {
-	TemplateID    string `json:"TemplateID"`
-	Name          string `json:"Name"`
-	PreviewURL    string `json:"PreviewURL"`
-	ScreenshotURL string `json:"ScreenshotURL"`
+// ScheduledCampaigns return all the scheduled campaigns for a specific client
+//
+// See https://www.campaignmonitor.com/api/clients/#sent_campaigns for more
+// information.
+func (c *APIClient) ScheduledCampaigns(clientID string) ([]*ScheduledCampaign, error) {
+	u := fmt.Sprintf("clients/%s/scheduled.json", clientID)
+
+	req, err := c.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var campaigns []*ScheduledCampaign
+	err = c.Do(req, &campaigns)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return campaigns, nil
+		} else {
+			return campaigns, err
+		}
+	}
+	return campaigns, err
+}
+
+// DraftCampaigns return all the draft campaigns for a specific client
+//
+// See https://www.campaignmonitor.com/api/clients/#sent_campaigns for more
+// information.
+func (c *APIClient) DraftCampaigns(clientID string) ([]*DraftCampaign, error) {
+	u := fmt.Sprintf("clients/%s/drafts.json", clientID)
+
+	req, err := c.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var campaigns []*DraftCampaign
+	err = c.Do(req, &campaigns)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return campaigns, nil
+		} else {
+			return campaigns, err
+		}
+	}
+	return campaigns, err
 }
 
 // Campaigns return all the templates for a specific client
