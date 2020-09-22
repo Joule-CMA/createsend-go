@@ -58,34 +58,6 @@ type Resubscribe struct {
 	Resubscribe bool `json:""`
 }
 
-// Resubscribe a subscriber.
-//
-// See http://www.campaignmonitor.com/api/subscribers/#adding_a_subscriber for
-// more information.
-func (c *APIClient) Resubscribe(listID string, email string) error {
-	u := fmt.Sprintf("subscribers/%s.json?email=", listID)
-
-	var sub = Resubscribe{Resubscribe: true}
-
-	req, err := c.NewRequest("POST", u, sub)
-	if err != nil {
-		return err
-	}
-
-	err = c.Do(req, nil)
-	if err != nil {
-		// EOF is not a real error according to the Internet
-		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
-		if strings.Compare("EOF", err.Error()) == 0 {
-			return nil
-		} else {
-			return err
-		}
-	}
-
-	return nil
-}
-
 // UpdateSubscriber updates a subscriber.
 //
 // See http://www.campaignmonitor.com/api/subscribers/#updating_a_subscriber for
