@@ -46,7 +46,7 @@ func (c *APIClient) SegmentCreate(listID string, sgmt *SegmentCreate) (string, e
 	return r, nil
 }
 
-func (c *APIClient) SegmentAppend(segmentID string, sgmt *SegmentCreate) error {
+func (c *APIClient) SegmentAppend(segmentID string, sgmt *[]RuleCreate) error {
 	// POST https://api.createsend.com/api/v3.2/segments/{segmentid}/rules.{xml|json}
 	u := fmt.Sprintf("segments/%s/rules.json", segmentID)
 
