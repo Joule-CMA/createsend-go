@@ -46,6 +46,28 @@ func (c *APIClient) SegmentCreate(listID string, sgmt *SegmentCreate) (string, e
 	return r, nil
 }
 
+func (c *APIClient) SegmentAppend(segmentID string, sgmt *SegmentCreate) error {
+	u := fmt.Sprintf("segments/%s.json", segmentID)
+
+	req, err := c.NewRequest("POST", u, sgmt)
+	if err != nil {
+		return err
+	}
+
+	err = c.Do(req, nil)
+	if err != nil {
+		// EOF is not a real error according to the Internet
+		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+		if strings.Compare("EOF", err.Error()) == 0 {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	return err
+}
+
 // Update an existing segment
 //
 // See https://www.campaignmonitor.com/api/segments/#updating_a_segment for more
