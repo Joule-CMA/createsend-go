@@ -47,7 +47,8 @@ func (c *APIClient) SegmentCreate(listID string, sgmt *SegmentCreate) (string, e
 }
 
 func (c *APIClient) SegmentAppend(segmentID string, sgmt *SegmentCreate) error {
-	u := fmt.Sprintf("segments/%s.json", segmentID)
+	// POST https://api.createsend.com/api/v3.2/segments/{segmentid}/rules.{xml|json}
+	u := fmt.Sprintf("segments/%s/rules.json", segmentID)
 
 	req, err := c.NewRequest("POST", u, sgmt)
 	if err != nil {
