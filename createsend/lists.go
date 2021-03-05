@@ -225,21 +225,17 @@ func (c *APIClient) ListCreateCustomField(listID string, def *CustomFieldCreate)
 	}
 
 	var v interface{}
+	err = c.Do(req, &v)
+
+	// EOF is not a real error according to the Internet
+	// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
+	if err != nil && strings.Compare("EOF", err.Error()) != 0 {
+			return "", err
+	}
 
 	r, ok := v.(string)
 	if !ok {
 		return "", errors.New("return is not a string")
-	}
-
-	err = c.Do(req, &v)
-	if err != nil {
-		// EOF is not a real error according to the Internet
-		// See: https://medium.com/@simonfrey/go-as-in-golang-standard-net-http-config-will-break-your-production-environment-1360871cb72b
-		if strings.Compare("EOF", err.Error()) == 0 {
-			return r, nil
-		} else {
-			return r, err
-		}
 	}
 
 	return r, nil
