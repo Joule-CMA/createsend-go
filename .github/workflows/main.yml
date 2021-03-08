@@ -1,0 +1,30 @@
+name: Build and run unit tests
+
+on: [push, pull_request]
+
+env:
+  GIT_USER: ${{ secrets.GIT_USER }}
+  GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+
+    - name: Install dependencies
+      run: |
+            go env -w GOPRIVATE=github.com/Joule-CMA
+            git config --global url."https://$GIT_USER:$GIT_TOKEN@github.com".insteadOf "https://github.com"
+            go get -d -v ./...
+        
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...
