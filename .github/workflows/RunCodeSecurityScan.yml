@@ -1,0 +1,38 @@
+name: Run Gosec
+#https://github.com/securego/gosec
+
+on: [push, pull_request]
+
+env:
+  GIT_USER: ${{ secrets.GIT_USER }}
+  GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+  
+  #MIN issue severity that cause failure of the action
+  #options: low, medium, high see gosec -help
+  MIN_ISSUE_SEVERITY: medium
+  
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      
+    - name: Checkout Source
+      uses: actions/checkout@v2
+      
+    - name: Set up Go
+      uses: actions/setup-go@v2
+
+    - name: Install dependencies
+      run: |
+            go env -w GOPRIVATE=github.com/Joule-CMA
+            git config --global url."https://$GIT_USER:$GIT_TOKEN@github.com".insteadOf "https://github.com"
+            go get -d -v ./...
+    
+    #gosec exits with code 1 if erorrs with severity >= low are found
+    - name: Run Gosec Security Scanner
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        go get github.com/securego/gosec/cmd/gosec
+        gosec  -severity=$MIN_ISSUE_SEVERITY ./... 
